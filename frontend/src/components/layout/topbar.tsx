@@ -25,7 +25,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -56,7 +61,11 @@ export function Topbar() {
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon">
-                {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                {mobileOpen ? (
+                  <X className="h-5 w-5" />
+                ) : (
+                  <Menu className="h-5 w-5" />
+                )}
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-64 p-0">
@@ -111,7 +120,10 @@ export function Topbar() {
           {/* User menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="flex items-center gap-2 rounded-full px-2">
+              <Button
+                variant="ghost"
+                className="flex items-center gap-2 rounded-full px-2"
+              >
                 <Avatar className="h-8 w-8">
                   <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
                     {initials}
@@ -125,7 +137,9 @@ export function Topbar() {
             <DropdownMenuContent align="end" className="w-48">
               <div className="px-2 py-1.5">
                 <p className="text-sm font-medium">{session?.user?.name}</p>
-                <p className="text-xs text-muted-foreground truncate">{session?.user?.email}</p>
+                <p className="text-xs text-muted-foreground truncate">
+                  {session?.user?.email}
+                </p>
               </div>
               <DropdownMenuSeparator />
               <DropdownMenuItem

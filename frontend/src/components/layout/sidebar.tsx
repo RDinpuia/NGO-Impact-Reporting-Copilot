@@ -13,7 +13,11 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const navItems = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
@@ -45,7 +49,8 @@ export function Sidebar() {
       {/* Navigation */}
       <nav className="flex-1 py-4 px-2 space-y-1">
         {navItems.map((item) => {
-          const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+          const isActive =
+            pathname === item.href || pathname.startsWith(item.href + "/");
           const link = (
             <Link
               key={item.href}
@@ -58,7 +63,12 @@ export function Sidebar() {
                 collapsed && "justify-center px-2",
               )}
             >
-              <item.icon className={cn("h-5 w-5 shrink-0", isActive && "text-sidebar-primary")} />
+              <item.icon
+                className={cn(
+                  "h-5 w-5 shrink-0",
+                  isActive && "text-sidebar-primary",
+                )}
+              />
               {!collapsed && <span>{item.label}</span>}
             </Link>
           );
@@ -83,7 +93,11 @@ export function Sidebar() {
           className="w-full justify-center"
           onClick={() => setCollapsed(!collapsed)}
         >
-          {collapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+          {collapsed ? (
+            <ChevronRight className="h-4 w-4" />
+          ) : (
+            <ChevronLeft className="h-4 w-4" />
+          )}
         </Button>
       </div>
     </aside>
