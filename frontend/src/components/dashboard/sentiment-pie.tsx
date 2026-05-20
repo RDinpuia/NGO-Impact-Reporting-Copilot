@@ -1,16 +1,30 @@
 "use client";
 
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
+import { BarChart3 } from "lucide-react";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
+  Legend,
+} from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
 
 interface SentimentPieProps {
-  sentiment: { positive: number; negative: number; neutral: number; total: number };
+  sentiment: {
+    positive: number;
+    negative: number;
+    neutral: number;
+    total: number;
+  };
 }
 
 const COLORS = [
-  "oklch(0.55 0.15 145)",   // green - positive
-  "oklch(0.6 0.2 25)",      // red - negative
-  "oklch(0.7 0.05 260)",    // gray - neutral
+  "oklch(0.55 0.15 145)", // green - positive
+  "oklch(0.6 0.2 25)", // red - negative
+  "oklch(0.7 0.05 260)", // gray - neutral
 ];
 
 export function SentimentPie({ sentiment }: SentimentPieProps) {
@@ -26,8 +40,17 @@ export function SentimentPie({ sentiment }: SentimentPieProps) {
         <CardHeader>
           <CardTitle className="text-lg">Sentiment Analysis</CardTitle>
         </CardHeader>
-        <CardContent className="flex items-center justify-center h-64 text-muted-foreground">
-          No sentiment data available
+        <CardContent className="flex flex-col items-center justify-center min-h-[200px] bg-slate-50 rounded-lg">
+          <BarChart3 className="h-12 w-12 text-gray-400 mb-3" />
+          <p className="text-muted-foreground mb-2">
+            Upload data to generate sentiment analysis
+          </p>
+          <Link
+            href="/dashboard/upload"
+            className="text-sm text-teal-600 hover:text-teal-700 underline"
+          >
+            Upload data
+          </Link>
         </CardContent>
       </Card>
     );
@@ -38,7 +61,7 @@ export function SentimentPie({ sentiment }: SentimentPieProps) {
       <CardHeader>
         <CardTitle className="text-lg">Sentiment Analysis</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-6">
         <ResponsiveContainer width="100%" height={280}>
           <PieChart>
             <Pie
@@ -53,7 +76,10 @@ export function SentimentPie({ sentiment }: SentimentPieProps) {
               stroke="var(--color-card)"
             >
               {data.map((_, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                />
               ))}
             </Pie>
             <Tooltip

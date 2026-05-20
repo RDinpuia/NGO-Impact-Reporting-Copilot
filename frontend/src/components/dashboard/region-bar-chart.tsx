@@ -1,7 +1,17 @@
 "use client";
 
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { MapPin } from "lucide-react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
 import type { ChartItem } from "@/types";
 
 interface RegionBarChartProps {
@@ -15,8 +25,17 @@ export function RegionBarChart({ data }: RegionBarChartProps) {
         <CardHeader>
           <CardTitle className="text-lg">By Region</CardTitle>
         </CardHeader>
-        <CardContent className="flex items-center justify-center h-64 text-muted-foreground">
-          No region data available
+        <CardContent className="flex flex-col items-center justify-center min-h-[200px] bg-slate-50 rounded-lg">
+          <MapPin className="h-12 w-12 text-gray-400 mb-3" />
+          <p className="text-muted-foreground mb-2">
+            No region data available. Upload more files.
+          </p>
+          <Link
+            href="/dashboard/upload"
+            className="text-sm text-teal-600 hover:text-teal-700 underline"
+          >
+            Upload data
+          </Link>
         </CardContent>
       </Card>
     );
@@ -27,10 +46,17 @@ export function RegionBarChart({ data }: RegionBarChartProps) {
       <CardHeader>
         <CardTitle className="text-lg">By Region</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-6">
         <ResponsiveContainer width="100%" height={280}>
-          <BarChart data={data} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" opacity={0.5} />
+          <BarChart
+            data={data}
+            margin={{ top: 5, right: 20, left: 0, bottom: 5 }}
+          >
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke="var(--color-border)"
+              opacity={0.5}
+            />
             <XAxis
               dataKey="name"
               tick={{ fontSize: 12, fill: "var(--color-muted-foreground)" }}
@@ -47,7 +73,11 @@ export function RegionBarChart({ data }: RegionBarChartProps) {
                 borderRadius: "8px",
               }}
             />
-            <Bar dataKey="count" fill="var(--color-chart-1)" radius={[6, 6, 0, 0]} />
+            <Bar
+              dataKey="count"
+              fill="var(--color-chart-1)"
+              radius={[6, 6, 0, 0]}
+            />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>

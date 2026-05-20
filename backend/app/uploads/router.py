@@ -6,6 +6,7 @@ from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
 from app.auth.dependencies import get_current_user
 from app.uploads.models import UploadResponse, UploadListItem
 from app.uploads import service
+from app.uploads.validation import ValidationError
 
 router = APIRouter()
 
@@ -32,6 +33,8 @@ async def upload_file(
 
     try:
         doc = await service.create_upload(current_user["id"], file.filename, content)
+    except ValidationError as e:
+        raise HTTPException(status_code=400, detail={"success": False, "errors": e.errors})
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:

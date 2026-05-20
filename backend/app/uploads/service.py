@@ -2,14 +2,18 @@
 Upload service: handles file storage and retrieval from MongoDB.
 """
 
+import logging
 from datetime import datetime
 from bson import ObjectId
 from app.database import get_db
 from app.uploads.processor import parse_file, process_dataframe
 
+logger = logging.getLogger(__name__)
+
 
 async def create_upload(user_id: str, filename: str, content: bytes) -> dict:
     """Parse a file, process it, and store everything in MongoDB."""
+    logger.info("Starting upload processing for user %s file %s", user_id, filename)
     db = get_db()
     file_type = filename.rsplit(".", 1)[-1].lower()
 
@@ -31,6 +35,7 @@ async def create_upload(user_id: str, filename: str, content: bytes) -> dict:
 
     result = await db.uploads.insert_one(doc)
     doc["_id"] = result.inserted_id
+    logger.info("Upload saved with id %s", doc["_id"])
     return doc
 
 

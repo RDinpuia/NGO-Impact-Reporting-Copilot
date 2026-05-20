@@ -21,6 +21,9 @@ async def create_report(user_id: str, upload_id: str, tone: str, title: str) -> 
         raise ValueError("Upload not found")
 
     processed = upload.get("processed_data", {})
+    if not isinstance(processed, dict) or not processed.get("kpis"):
+        raise ValueError("Upload does not contain valid processed data for report generation")
+
     kpis = processed.get("kpis", {})
     sentiment = processed.get("sentiment", {})
 

@@ -42,10 +42,12 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-8">
         <div>
           <h1 className="text-3xl font-bold">Dashboard</h1>
-          <p className="text-muted-foreground mt-1">Loading your impact overview...</p>
+          <p className="text-muted-foreground mt-1">
+            Loading your impact overview...
+          </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[...Array(4)].map((_, i) => (
@@ -64,18 +66,21 @@ export default function DashboardPage() {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <p className="text-muted-foreground text-lg">No data available yet.</p>
-        <p className="text-sm text-muted-foreground mt-1">Upload your first dataset to get started.</p>
+        <p className="text-sm text-muted-foreground mt-1">
+          Upload your first dataset to get started.
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+        <h1 className="text-4xl font-bold tracking-tight">Dashboard</h1>
         <p className="text-muted-foreground mt-1">
-          Your impact at a glance — {stats.kpis.total_uploads} dataset{stats.kpis.total_uploads !== 1 ? "s" : ""} processed
+          Your impact at a glance — {stats.kpis.total_uploads} dataset
+          {stats.kpis.total_uploads !== 1 ? "s" : ""} processed
         </p>
       </div>
 
@@ -95,7 +100,10 @@ export default function DashboardPage() {
       </div>
 
       {/* Recent Activity */}
-      <RecentActivity uploads={stats.recent_uploads} reports={reports.slice(0, 5)} />
+      <RecentActivity
+        uploads={stats.recent_uploads}
+        reports={reports.slice(0, 5)}
+      />
     </div>
   );
 }

@@ -1,7 +1,17 @@
 "use client";
 
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { TrendingUp } from "lucide-react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
 import type { MonthlyTrend } from "@/types";
 
 interface MonthlyTrendLineProps {
@@ -15,8 +25,17 @@ export function MonthlyTrendLine({ data }: MonthlyTrendLineProps) {
         <CardHeader>
           <CardTitle className="text-lg">Monthly Trends</CardTitle>
         </CardHeader>
-        <CardContent className="flex items-center justify-center h-64 text-muted-foreground">
-          No trend data available
+        <CardContent className="flex flex-col items-center justify-center min-h-[200px] bg-slate-50 rounded-lg">
+          <TrendingUp className="h-12 w-12 text-gray-400 mb-3" />
+          <p className="text-muted-foreground mb-2">
+            No trend data available. Start tracking activity.
+          </p>
+          <Link
+            href="/dashboard/upload"
+            className="text-sm text-teal-600 hover:text-teal-700 underline"
+          >
+            Upload data
+          </Link>
         </CardContent>
       </Card>
     );
@@ -33,10 +52,17 @@ export function MonthlyTrendLine({ data }: MonthlyTrendLineProps) {
       <CardHeader>
         <CardTitle className="text-lg">Monthly Trends</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-6">
         <ResponsiveContainer width="100%" height={280}>
-          <LineChart data={formatted} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" opacity={0.5} />
+          <LineChart
+            data={formatted}
+            margin={{ top: 5, right: 20, left: 0, bottom: 5 }}
+          >
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke="var(--color-border)"
+              opacity={0.5}
+            />
             <XAxis
               dataKey="label"
               tick={{ fontSize: 11, fill: "var(--color-muted-foreground)" }}
