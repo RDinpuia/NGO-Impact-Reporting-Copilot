@@ -54,43 +54,57 @@
 }
 
 /* ─── Light theme: calm NGO-friendly blues & greens ──────────────────── */
+/* ─── Light theme: premium green NGO palette ────────────────────────── */
 :root {
-  --background: oklch(0.985 0.002 240);
-  --foreground: oklch(0.18 0.02 260);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.02 260);
+  --background: oklch(0.97 0.015 145); /* soft mint background */
+  --foreground: oklch(0.22 0.02 150);
+
+  --card: oklch(0.995 0.004 145);
+  --card-foreground: oklch(0.22 0.02 150);
+
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.02 260);
-  --primary: oklch(0.45 0.12 180);
+  --popover-foreground: oklch(0.22 0.02 150);
+
+  /* Main brand green */
+  --primary: oklch(0.52 0.14 155);
   --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.96 0.01 220);
-  --secondary-foreground: oklch(0.25 0.02 260);
-  --muted: oklch(0.955 0.008 240);
-  --muted-foreground: oklch(0.5 0.02 260);
-  --accent: oklch(0.94 0.02 170);
-  --accent-foreground: oklch(0.25 0.06 180);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.91 0.01 240);
-  --input: oklch(0.91 0.01 240);
-  --ring: oklch(0.45 0.12 180);
-  --chart-1: oklch(0.45 0.12 180);
-  --chart-2: oklch(0.55 0.15 145);
-  --chart-3: oklch(0.6 0.12 250);
-  --chart-4: oklch(0.7 0.14 80);
-  --chart-5: oklch(0.55 0.2 330);
-  --radius: 0.625rem;
-  --brand: oklch(0.45 0.12 180);
+
+  /* Soft sage secondary */
+  --secondary: oklch(0.93 0.02 150);
+  --secondary-foreground: oklch(0.3 0.03 150);
+
+  /* Muted green panels */
+  --muted: oklch(0.95 0.012 150);
+  --muted-foreground: oklch(0.48 0.015 150);
+
+  /* Accent green */
+  --accent: oklch(0.9 0.03 150);
+  --accent-foreground: oklch(0.32 0.05 155);
+
+  --destructive: oklch(0.62 0.22 25);
+
+  --border: oklch(0.88 0.015 150);
+  --input: oklch(0.9 0.015 150);
+
+  --ring: oklch(0.52 0.14 155);
+
+  --brand: oklch(0.52 0.14 155);
   --brand-foreground: oklch(0.99 0 0);
-  --success: oklch(0.55 0.15 145);
-  --warning: oklch(0.75 0.15 80);
-  --sidebar: oklch(0.99 0.003 220);
-  --sidebar-foreground: oklch(0.18 0.02 260);
-  --sidebar-primary: oklch(0.45 0.12 180);
+
+  --success: oklch(0.62 0.15 145);
+  --warning: oklch(0.78 0.15 90);
+
+  --sidebar: oklch(0.985 0.01 150);
+  --sidebar-foreground: oklch(0.22 0.02 150);
+
+  --sidebar-primary: oklch(0.52 0.14 155);
   --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.94 0.02 170);
-  --sidebar-accent-foreground: oklch(0.25 0.06 180);
-  --sidebar-border: oklch(0.91 0.01 240);
-  --sidebar-ring: oklch(0.45 0.12 180);
+
+  --sidebar-accent: oklch(0.93 0.02 150);
+  --sidebar-accent-foreground: oklch(0.3 0.03 150);
+
+  --sidebar-border: oklch(0.88 0.015 150);
+  --sidebar-ring: oklch(0.52 0.14 155);
 }
 
 /* ─── Dark theme ─────────────────────────────────────────────────────── */
@@ -152,4 +166,33 @@
   .gradient-text {
     @apply bg-gradient-to-r from-primary to-chart-2 bg-clip-text text-transparent;
   }
+}
+@layer utilities {
+  .auth-page {
+    background:
+      radial-gradient(circle at top left,
+        rgba(34,197,94,0.18),
+        transparent 40%),
+      radial-gradient(circle at bottom right,
+        rgba(16,185,129,0.16),
+        transparent 35%),
+      linear-gradient(
+        135deg,
+        #edfdf3 0%,
+        #f5fff8 45%,
+        #e7f8ec 100%
+      );
+  }
+
+  .auth-card {
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(34,197,94,0.12);
+
+  box-shadow:
+    0 12px 40px rgba(16,185,129,0.08);
+
+  border-radius: 36px; /* increased */
+}
 }
