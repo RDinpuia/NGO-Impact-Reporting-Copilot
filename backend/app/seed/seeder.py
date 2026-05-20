@@ -22,10 +22,10 @@ async def seed_sample_data():
     # Check if demo user already exists
     existing = await db.users.find_one({"email": DEMO_EMAIL})
     if existing:
-        print("ℹ️  Demo data already seeded, skipping.")
+        print("Demo data already seeded, skipping.")
         return
 
-    print("🌱 Seeding demo data...")
+    print("Seeding demo data...")
 
     # 1. Create demo user
     user_doc = {
@@ -36,7 +36,7 @@ async def seed_sample_data():
     }
     result = await db.users.insert_one(user_doc)
     user_id = str(result.inserted_id)
-    print(f"   ✅ Created demo user: {DEMO_EMAIL} / {DEMO_PASSWORD}")
+    print(f"   Created demo user: {DEMO_EMAIL} / {DEMO_PASSWORD}")
 
     # 2. Load and process sample CSV
     csv_path = os.path.join(os.path.dirname(__file__), "sample_data.csv")
@@ -57,7 +57,7 @@ async def seed_sample_data():
         "created_at": datetime.utcnow(),
     }
     upload_result = await db.uploads.insert_one(upload_doc)
-    print(f"   ✅ Uploaded sample dataset ({len(df)} rows)")
+    print(f"   Uploaded sample dataset ({len(df)} rows)")
 
     # 3. Generate a sample report using mock AI
     from app.reports.ai_client import generate_report_content
@@ -78,5 +78,5 @@ async def seed_sample_data():
         "created_at": datetime.utcnow(),
     }
     await db.reports.insert_one(report_doc)
-    print("   ✅ Generated sample impact report")
-    print(f"🎉 Seeding complete! Login with: {DEMO_EMAIL} / {DEMO_PASSWORD}")
+    print("   Generated sample impact report")
+    print(f"Seeding complete! Login with: {DEMO_EMAIL} / {DEMO_PASSWORD}")
