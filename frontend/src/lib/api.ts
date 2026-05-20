@@ -39,7 +39,21 @@ async function request<T>(
 
   if (!res.ok) {
     const data = await res.json().catch(() => ({ detail: "Request failed" }));
-    throw new ApiError(data.detail || `Error ${res.status}`, res.status);
+    let message = "Request failed";
+
+    if (typeof data?.detail === "string") {
+      message = data.detail;
+    } else if (Array.isArray(data?.detail)) {
+      message = data.detail.join("; ");
+    } else if (Array.isArray(data?.errors)) {
+      message = data.errors.join("; ");
+    } else if (data?.detail?.errors && Array.isArray(data.detail.errors)) {
+      message = data.detail.errors.join("; ");
+    } else if (typeof data?.detail === "object") {
+      message = JSON.stringify(data.detail);
+    }
+
+    throw new ApiError(message || `Error ${res.status}`, res.status);
   }
 
   // Handle PDF/blob responses
@@ -94,17 +108,25 @@ export const uploadsApi = {
 
 export const dashboardApi = {
   stats: (token: string) =>
-    request<import("@/types").DashboardStats>("/api/dashboard/stats", {}, token),
+    request<import("@/types").DashboardStats>(
+      "/api/dashboard/stats",
+      {},
+      token,
+    ),
 };
 
 /* ─── Reports ─────────────────────────────────────────────────────────── */
 
 export const reportsApi = {
   generate: (uploadId: string, tone: string, title: string, token: string) =>
-    request<import("@/types").Report>("/api/reports/generate", {
-      method: "POST",
-      body: JSON.stringify({ upload_id: uploadId, tone, title }),
-    }, token),
+    request<import("@/types").Report>(
+      "/api/reports/generate",
+      {
+        method: "POST",
+        body: JSON.stringify({ upload_id: uploadId, tone, title }),
+      },
+      token,
+    ),
 
   list: (token: string) =>
     request<import("@/types").ReportListItem[]>("/api/reports/", {}, token),

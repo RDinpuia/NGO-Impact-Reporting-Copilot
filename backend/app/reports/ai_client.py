@@ -15,6 +15,19 @@ def _build_prompt(kpis: dict, sentiment: dict, tone: str) -> str:
         "concise": "Be brief and data-driven. Use bullet points and short paragraphs.",
     }
 
+    problem_notes = []
+    if kpis.get("total_records", 0) == 0 or kpis.get("total_beneficiaries", 0) == 0:
+        problem_notes.append("The dataset contains zero recorded beneficiaries or zero valid records.")
+    if kpis.get("avg_attendance", 0) == 0:
+        problem_notes.append("Attendance is zero or missing, so the narrative should not overstate engagement.")
+    if sentiment.get("score", 0) == 0:
+        problem_notes.append("Sentiment score is 0%, so avoid positive language and describe concerns accurately.")
+
+    guidance = """
+Use precise, factual language. If the data shows zero metrics or low sentiment, do not portray the program as high-impact.
+Avoid contradictions such as "0 attendance" paired with "high engagement".
+"""
+
     return f"""You are an expert NGO impact report writer. Generate a professional impact report based on the following data.
 
 TONE: {tone_instructions.get(tone, tone_instructions["formal"])}
@@ -27,6 +40,10 @@ SENTIMENT ANALYSIS OF BENEFICIARY FEEDBACK:
 - Negative responses: {sentiment.get('negative', 0)}
 - Neutral responses: {sentiment.get('neutral', 0)}
 - Overall sentiment score: {sentiment.get('score', 0)}%
+
+{guidance}
+
+{' '.join(problem_notes)}
 
 Generate a report with EXACTLY these four sections (use these exact headings):
 
@@ -123,43 +140,66 @@ def _generate_mock(kpis: dict, sentiment: dict, tone: str) -> dict:
     avg_att = kpis.get("avg_attendance", 0)
     score = sentiment.get("score", 0)
     total_records = kpis.get("total_records", 0)
+    positive_feedback = sentiment.get("positive", 0)
+    negative_feedback = sentiment.get("negative", 0)
+
+    if total_records == 0:
+        return {
+            "executive_summary": "No valid data records were available for this report. Please upload a dataset containing at least one row of beneficiary field data.",
+            "key_metrics": "- No metrics are available because the dataset contains zero records.",
+            "impact_narrative": "Unable to generate an impact narrative without valid data. Upload a complete dataset to produce a reliable report.",
+            "challenges_recommendations": "Ensure the uploaded dataset includes required columns and valid values before generating a report.",
+        }
+
+    attendance_description = (
+        "Attendance was limited during this period, with an average of {avg_att} participants per session." if avg_att == 0
+        else f"Attendance averaged {avg_att} participants per session, indicating active participation where programs were delivered."
+    )
+
+    sentiment_description = (
+        "The sentiment score is low, indicating that beneficiary experiences may need further investigation and improvement."
+        if score <= 20
+        else f"Beneficiary sentiment is measured at {score}%, suggesting that most participants are responding positively."
+    )
+
+    beneficiary_summary = (
+        f"The dataset records {total_ben:,} unique beneficiaries." if total_ben > 0
+        else "No beneficiaries were recorded in the dataset."
+    )
 
     return {
-        "executive_summary": f"""This reporting period has demonstrated significant progress across our program areas. Our initiatives have directly reached **{total_ben:,} beneficiaries** through **{total_act} distinct activity types**, reflecting a comprehensive approach to community development.
+        "executive_summary": f"""{beneficiary_summary}
 
-The data collected from {total_records} field records shows strong program engagement, with an average attendance rate of {avg_att} participants per session. Beneficiary feedback has been overwhelmingly positive, with a sentiment score of {score}% indicating high satisfaction with program delivery.
+{attendance_description}
 
-Our multi-regional approach has enabled us to serve diverse communities while maintaining consistent quality standards across all intervention areas.""",
+{sentiment_description}""",
 
         "key_metrics": f"""- **Total Beneficiaries Reached**: {total_ben:,}
 - **Program Activities**: {total_act} distinct types delivered
 - **Average Session Attendance**: {avg_att} participants
-- **Beneficiary Satisfaction**: {score}% positive sentiment
+- **Beneficiary Satisfaction**: {score}%
 - **Data Points Collected**: {total_records} field records
-- **Positive Feedback**: {sentiment.get('positive', 0)} responses
-- **Areas for Improvement**: {sentiment.get('negative', 0)} critical feedback items identified
+- **Positive Feedback**: {positive_feedback} responses
+- **Negative Feedback**: {negative_feedback} responses""",
 
-The metrics demonstrate strong program reach and effectiveness. The high satisfaction rate indicates that our interventions are well-aligned with community needs and expectations.""",
+        "impact_narrative": f"""This report reflects the actual dataset captured during the reporting period. {beneficiary_summary}
 
-        "impact_narrative": f"""Our programs have created meaningful change across the communities we serve. With {total_ben:,} beneficiaries reached, the impact extends beyond mere numbers — each interaction represents a life touched, a skill learned, or a barrier overcome.
+{attendance_description}
 
-Field feedback reveals powerful stories of transformation. {sentiment.get('positive', 0)} beneficiaries shared positive experiences, describing how the programs have improved their daily lives, enhanced their skills, and strengthened community bonds.
+{sentiment_description}
 
-The consistency of engagement, reflected in our {avg_att} average attendance rate, speaks to the relevance and quality of our programming. Communities are not merely receiving services — they are actively participating in their own development journey.
-
-Despite the challenges inherent in community development work, our teams have maintained their commitment to excellence, adapting approaches to meet the unique needs of each region while upholding our organization's core values of inclusivity and empowerment.""",
+The narrative is based on the available data and is intentionally grounded in what can be supported by the metrics above.""",
 
         "challenges_recommendations": f"""**Challenges Identified:**
 
-1. **Feedback Gap**: {sentiment.get('negative', 0)} negative feedback items highlight areas where program delivery can be improved
-2. **Data Coverage**: Some regions may have uneven data collection, requiring standardized reporting protocols
-3. **Attendance Variability**: Fluctuations in attendance suggest the need for more flexible scheduling
+1. **Data quality**: The dataset contains {total_records} records and should be reviewed for completeness.
+2. **Feedback balance**: {negative_feedback} negative feedback items were recorded, signaling an opportunity to improve beneficiary experience.
+3. **Program delivery**: Evaluate attendance patterns and ensure programming aligns with participant availability.
 
 **Recommendations:**
 
-1. **Strengthen Feedback Mechanisms**: Implement regular feedback loops to address concerns proactively
-2. **Expand Data Collection**: Standardize field data templates across all regions to ensure comprehensive coverage
-3. **Diversify Programming**: Based on the activity type analysis, consider expanding successful program models to underserved areas
-4. **Capacity Building**: Invest in staff training to improve data quality and program delivery
-5. **Community Engagement**: Develop community advisory committees to increase local ownership and participation""",
+1. **Review data collection**: Standardize data capture across regions to reduce invalid or missing values.
+2. **Act on participant feedback**: Investigate negative sentiment items and address recurring concerns.
+3. **Optimize attendance**: Adjust scheduling or outreach to improve participation.
+4. **Validate future uploads**: Confirm that all required fields are present and correctly formatted before report generation.""",
     }
