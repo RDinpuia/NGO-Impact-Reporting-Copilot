@@ -110,12 +110,12 @@ export default function ReportDetailPage() {
         <Button
           onClick={handleDownloadPdf}
           disabled={downloading}
-          className="gap-2 shrink-0"
+          className="gap-2 shrink-0 px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white font-semibold shadow-md hover:shadow-lg transition-all"
         >
           {downloading ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2 className="h-5 w-5 animate-spin" />
           ) : (
-            <Download className="h-4 w-4" />
+            <Download className="h-5 w-5" />
           )}
           Download PDF
         </Button>

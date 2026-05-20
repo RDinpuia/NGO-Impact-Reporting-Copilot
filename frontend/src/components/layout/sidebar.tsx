@@ -56,18 +56,15 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200",
+                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all duration-200 border-l-4",
                 isActive
-                  ? "bg-sidebar-accent text-sidebar-primary shadow-sm"
-                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground",
+                  ? "border-l-teal-600 bg-teal-50 text-teal-600 font-bold shadow-sm"
+                  : "border-l-transparent text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground font-normal",
                 collapsed && "justify-center px-2",
               )}
             >
               <item.icon
-                className={cn(
-                  "h-5 w-5 shrink-0",
-                  isActive && "text-sidebar-primary",
-                )}
+                className={cn("h-5 w-5 shrink-0", isActive && "text-teal-600")}
               />
               {!collapsed && <span>{item.label}</span>}
             </Link>
