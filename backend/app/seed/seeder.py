@@ -1,6 +1,6 @@
 """
 Auto-seeder: creates a demo user and uploads sample data on first startup.
-Runs once — skips if the demo user already exists.
+Runs once - skips if the demo user already exists.
 """
 
 import os
@@ -69,7 +69,7 @@ async def seed_sample_data():
     report_doc = {
         "user_id": user_id,
         "upload_id": str(upload_result.inserted_id),
-        "title": "Impact Report — Sample NGO Field Data",
+        "title": "Impact Report - Sample NGO Field Data",
         "tone": "formal",
         "content": content,
         "kpis": kpis,

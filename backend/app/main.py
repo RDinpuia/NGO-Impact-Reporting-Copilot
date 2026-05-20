@@ -22,14 +22,14 @@ async def lifespan(app: FastAPI):
     try:
         await seed_sample_data()
     except Exception as e:
-        print(f"⚠️  Seeding failed (non-fatal): {e}")
+        print(f"Seeding failed (non-fatal): {e}")
     yield
     await close_db()
 
 
 app = FastAPI(
     title="ImpactLens API",
-    description="NGO Impact Reporting Copilot — Transform field data into professional impact reports",
+    description="NGO Impact Reporting Copilot - Transform field data into professional impact reports",
     version="1.0.0",
     lifespan=lifespan,
 )

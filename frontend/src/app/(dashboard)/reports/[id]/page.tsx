@@ -5,11 +5,11 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Download, Loader2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import ReactMarkdown from "react-markdown";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { MarkdownContent } from "@/components/markdown-content";
 import { reportsApi } from "@/lib/api";
 import type { Report } from "@/types";
 import { toast } from "sonner";
@@ -165,8 +165,8 @@ export default function ReportDetailPage() {
               <CardTitle className="text-xl">{section.title}</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="prose prose-slate dark:prose-invert max-w-none text-sm leading-relaxed">
-                <ReactMarkdown>{section.content}</ReactMarkdown>
+              <div className="max-w-none text-sm leading-relaxed">
+                <MarkdownContent content={section.content} />
               </div>
             </CardContent>
           </Card>

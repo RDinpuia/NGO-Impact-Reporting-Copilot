@@ -84,6 +84,30 @@ This includes a sample NGO dataset (50 records) and a pre-generated impact repor
 | `NEXTAUTH_URL` | Frontend URL | `http://localhost:3000` |
 | `NEXTAUTH_SECRET` | NextAuth session secret | (change in production) |
 
+## Deploying To Vercel
+
+This repo is configured to deploy the Next.js frontend from the `frontend/` folder.
+The FastAPI backend must be deployed separately to a public URL, such as Render,
+Railway, Fly.io, or a VPS. Do not use `localhost` in Vercel environment
+variables, because `localhost` would point to Vercel's build/runtime container,
+not your machine.
+
+Set these Vercel environment variables for the frontend:
+
+| Variable | Production value |
+|----------|------------------|
+| `NEXT_PUBLIC_API_URL` | Your public FastAPI backend URL, for example `https://your-backend.onrender.com` |
+| `NEXTAUTH_URL` | Your Vercel frontend URL, for example `https://your-project.vercel.app` |
+| `NEXTAUTH_SECRET` | A strong random secret, for example from `openssl rand -base64 32` |
+
+Set these environment variables wherever the backend is hosted:
+
+| Variable | Production value |
+|----------|------------------|
+| `MONGODB_URL` | A MongoDB Atlas or public MongoDB connection string |
+| `JWT_SECRET` | A strong random backend JWT secret |
+| `CORS_ORIGINS` | Your Vercel frontend URL |
+
 ## Project Structure
 
 ```

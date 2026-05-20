@@ -73,7 +73,7 @@ export function Sidebar() {
           if (collapsed) {
             return (
               <Tooltip key={item.href}>
-                <TooltipTrigger asChild>{link}</TooltipTrigger>
+                <TooltipTrigger render={link} />
                 <TooltipContent side="right">{item.label}</TooltipContent>
               </Tooltip>
             );

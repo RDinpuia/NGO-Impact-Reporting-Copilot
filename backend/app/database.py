@@ -18,9 +18,9 @@ async def connect_db():
         db = client[settings.DATABASE_NAME]
         # Verify connection
         await client.admin.command("ping")
-        print(f"✅ Connected to MongoDB: {settings.DATABASE_NAME}")
+        print(f"Connected to MongoDB: {settings.DATABASE_NAME}")
     except Exception as e:
-        print(f"⚠️  MongoDB connection failed: {e}")
+        print(f"MongoDB connection failed: {e}")
         print("   The app will continue but database operations will fail.")
 
 
@@ -29,7 +29,7 @@ async def close_db():
     global client
     if client:
         client.close()
-        print("🔌 MongoDB connection closed")
+        print("MongoDB connection closed")
 
 
 def get_db() -> AsyncIOMotorDatabase:

@@ -29,7 +29,7 @@ async def create_report(user_id: str, upload_id: str, tone: str, title: str) -> 
 
     # Auto-generate title if not provided
     if not title:
-        title = f"Impact Report — {upload['filename']}"
+        title = f"Impact Report - {upload['filename']}"
 
     # Create initial report document with 'generating' status
     doc = {

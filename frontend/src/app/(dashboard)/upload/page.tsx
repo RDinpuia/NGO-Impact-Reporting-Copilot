@@ -16,13 +16,14 @@ import { toast } from "sonner";
 export default function UploadPage() {
   const { data: session } = useSession();
   const router = useRouter();
+  const accessToken = session?.accessToken;
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [result, setResult] = useState<UploadType | null>(null);
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
-      if (!session?.accessToken || acceptedFiles.length === 0) return;
+      if (!accessToken || acceptedFiles.length === 0) return;
 
       const file = acceptedFiles[0];
       setUploading(true);
@@ -31,7 +32,7 @@ export default function UploadPage() {
 
       try {
         setProgress(50);
-        const data = await uploadsApi.upload(file, session.accessToken);
+        const data = await uploadsApi.upload(file, accessToken);
         setProgress(100);
         setResult(data);
         toast.success(`"${file.name}" processed successfully!`);
@@ -43,7 +44,7 @@ export default function UploadPage() {
         setUploading(false);
       }
     },
-    [session?.accessToken],
+    [accessToken],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
