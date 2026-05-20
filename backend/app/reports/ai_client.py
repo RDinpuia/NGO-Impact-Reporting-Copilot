@@ -152,7 +152,7 @@ def _generate_mock(kpis: dict, sentiment: dict, tone: str) -> dict:
         }
 
     attendance_description = (
-        "Attendance was limited during this period, with an average of {avg_att} participants per session." if avg_att == 0
+        f"Attendance was limited during this period, with an average of {avg_att} participants per session." if avg_att == 0
         else f"Attendance averaged {avg_att} participants per session, indicating active participation where programs were delivered."
     )
 

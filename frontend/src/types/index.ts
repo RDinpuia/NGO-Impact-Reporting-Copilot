@@ -43,6 +43,7 @@ export interface ProcessedData {
 
 export interface KPIs {
   total_records: number;
+  total_columns?: number;
   total_beneficiaries?: number;
   avg_beneficiaries?: number;
   avg_attendance?: number;

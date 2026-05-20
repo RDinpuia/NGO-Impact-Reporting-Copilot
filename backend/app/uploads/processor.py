@@ -40,11 +40,17 @@ def parse_file(content: bytes, filename: str) -> pd.DataFrame:
     elif ext in ("xlsx", "xls"):
         df = pd.read_excel(BytesIO(content))
     elif ext == "txt":
-        try:
-            df = pd.read_csv(BytesIO(content), sep=None, engine="python")
-        except Exception:
-            lines = content.decode("utf-8", errors="ignore").strip().split("\n")
-            df = pd.DataFrame({"feedback": [l for l in lines if l.strip()]})
+        text = content.decode("utf-8", errors="ignore")
+        first_line = next((line for line in text.splitlines() if line.strip()), "")
+        if any(delimiter in first_line for delimiter in [",", "\t", "|", ";"]):
+            try:
+                df = pd.read_csv(BytesIO(content), sep=None, engine="python")
+            except Exception:
+                lines = text.strip().splitlines()
+                df = pd.DataFrame({"feedback": [line.strip() for line in lines if line.strip()]})
+        else:
+            lines = text.strip().splitlines()
+            df = pd.DataFrame({"feedback": [line.strip() for line in lines if line.strip()]})
     else:
         raise ValueError(f"Unsupported file type: {ext}")
 
@@ -111,23 +117,46 @@ def extract_kpis(df: pd.DataFrame) -> dict[str, Any]:
     kpis: dict[str, Any] = {
         "total_records": len(df),
         "columns": list(df.columns),
+        "total_columns": len(df.columns),
     }
 
-    kpis["total_beneficiaries"] = int(df["beneficiary_id"].nunique())
-    kpis["unique_beneficiaries"] = int(df["beneficiary_id"].nunique())
+    beneficiary_col = next(
+        (c for c in df.columns if c in {"beneficiary_id", "beneficiary", "participant_id", "person_id", "id"}),
+        None,
+    )
+    if beneficiary_col:
+        unique_beneficiaries = int(df[beneficiary_col].nunique(dropna=True))
+    else:
+        unique_beneficiaries = len(df)
 
-    attendance_numeric = pd.to_numeric(df["attendance"], errors="coerce")
-    kpis["avg_attendance"] = round(float(attendance_numeric.mean()), 1) if not attendance_numeric.isna().all() else 0
+    kpis["total_beneficiaries"] = unique_beneficiaries
+    kpis["unique_beneficiaries"] = unique_beneficiaries
+
+    attendance_col = next(
+        (c for c in df.columns if c in {"attendance", "attendees", "participants", "beneficiaries", "count"}),
+        None,
+    )
+    if attendance_col:
+        attendance_numeric = pd.to_numeric(df[attendance_col], errors="coerce")
+        kpis["avg_attendance"] = round(float(attendance_numeric.mean()), 1) if not attendance_numeric.isna().all() else 0
+    else:
+        kpis["avg_attendance"] = 0
 
     if "activity_type" in df.columns:
         kpis["total_activities"] = int(df["activity_type"].nunique())
         kpis["activity_types"] = {str(k): int(v) for k, v in df["activity_type"].value_counts().items()}
+    elif "activity" in df.columns:
+        kpis["total_activities"] = int(df["activity"].nunique())
+        kpis["activity_types"] = {str(k): int(v) for k, v in df["activity"].value_counts().items()}
     else:
         kpis["total_activities"] = 0
         kpis["activity_types"] = {}
 
-    sentiment_numeric = pd.to_numeric(df["sentiment_score"], errors="coerce")
-    kpis["avg_sentiment_score"] = round(float(sentiment_numeric.mean()) * 100, 1) if not sentiment_numeric.isna().all() else 0
+    if "sentiment_score" in df.columns:
+        sentiment_numeric = pd.to_numeric(df["sentiment_score"], errors="coerce")
+        kpis["avg_sentiment_score"] = round(float(sentiment_numeric.mean()) * 100, 1) if not sentiment_numeric.isna().all() else 0
+    else:
+        kpis["avg_sentiment_score"] = 0
 
     return kpis
 
@@ -136,9 +165,10 @@ def extract_kpis(df: pd.DataFrame) -> dict[str, Any]:
 
 def get_region_breakdown(df: pd.DataFrame) -> list[dict]:
     """Count records per region/location."""
-    if "region" not in df.columns:
+    region_col = next((c for c in df.columns if c in {"region", "location", "district", "state", "city", "area"}), None)
+    if not region_col:
         return []
-    return [{"name": str(k), "count": int(v)} for k, v in df["region"].value_counts().head(10).items()]
+    return [{"name": str(k), "count": int(v)} for k, v in df[region_col].value_counts().head(10).items()]
 
 
 def get_monthly_trends(df: pd.DataFrame) -> list[dict]:
@@ -149,9 +179,15 @@ def get_monthly_trends(df: pd.DataFrame) -> list[dict]:
         dates = pd.to_datetime(df["date"], errors="coerce")
         monthly = dates.dt.to_period("M").value_counts().sort_index()
 
-        attendance_numeric = pd.to_numeric(df["attendance"], errors="coerce")
+        attendance_col = "attendance" if "attendance" in df.columns else None
+        attendance_numeric = pd.to_numeric(df[attendance_col], errors="coerce") if attendance_col else pd.Series([0] * len(df))
         return [
-            {"month": str(k), "attendance": int(attendance_numeric.loc[dates.dt.to_period("M") == k].sum()), "count": int(monthly.get(k, 0))}
+            {
+                "month": str(k),
+                "attendance": int(attendance_numeric.loc[dates.dt.to_period("M") == k].sum()),
+                "value": int(attendance_numeric.loc[dates.dt.to_period("M") == k].sum()),
+                "count": int(monthly.get(k, 0)),
+            }
             for k in monthly.index
         ]
     except Exception:
@@ -171,12 +207,13 @@ def get_beneficiary_distribution(df: pd.DataFrame) -> list[dict]:
 def process_dataframe(df: pd.DataFrame) -> dict[str, Any]:
     """Run all processing steps and return a combined result dict."""
     validate_dataframe(df)
-    sentiment_overall = _parse_sentiment_score(df)
+    analyzed_sentiment = analyze_feedback_sentiment(df)
+    sentiment_overall = _parse_sentiment_score(df) if "sentiment_score" in df.columns else analyzed_sentiment["score"]
 
     return {
         "kpis": extract_kpis(df),
         "sentiment": {
-            **analyze_feedback_sentiment(df),
+            **analyzed_sentiment,
             "score": sentiment_overall,
         },
         "region_breakdown": get_region_breakdown(df),

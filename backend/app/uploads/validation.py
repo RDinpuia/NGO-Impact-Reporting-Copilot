@@ -1,18 +1,7 @@
-"""Validation utilities for uploaded field data files."""
+"""Validation utilities for uploaded data files."""
 
 import pandas as pd
 from typing import List
-
-REQUIRED_COLUMNS = [
-    "beneficiary_id",
-    "name",
-    "region",
-    "activity_type",
-    "attendance",
-    "sentiment_score",
-    "date",
-]
-
 
 class ValidationError(Exception):
     """Represents one or more validation failures in an uploaded dataset."""
@@ -29,12 +18,6 @@ def _normalize_text_column(series: pd.Series) -> pd.Series:
 def _get_invalid_text_rows(series: pd.Series) -> bool:
     normalized = _normalize_text_column(series).str.lower()
     return normalized.isin({"", "nan", "none"})
-
-
-def _validate_required_columns(df: pd.DataFrame, errors: List[str]) -> None:
-    missing = [col for col in REQUIRED_COLUMNS if col not in df.columns]
-    if missing:
-        errors.append(f"Missing required columns: {', '.join(missing)}")
 
 
 def _validate_integer_column(df: pd.DataFrame, column: str, errors: List[str]) -> None:
@@ -71,20 +54,18 @@ def _validate_date_column(df: pd.DataFrame, column: str, errors: List[str]) -> N
 
 
 def validate_dataframe(df: pd.DataFrame) -> pd.DataFrame:
-    """Validate a parsed DataFrame against the required upload schema."""
+    """Validate that an uploaded dataset has usable rows and columns.
+
+    The processor can work with generic CSV, Excel, and text files. NGO-specific
+    columns improve the extracted metrics, but they are not mandatory.
+    """
     errors: List[str] = []
 
     if df.empty:
         errors.append("Dataset contains no records")
 
-    _validate_required_columns(df, errors)
-
-    if not errors:
-        _validate_integer_column(df, "beneficiary_id", errors)
-        _validate_numeric_column(df, "attendance", 0, float("inf"), errors)
-        _validate_numeric_column(df, "sentiment_score", 0.0, 1.0, errors)
-        _validate_date_column(df, "date", errors)
-        _validate_text_columns(df, ["name", "region", "activity_type"], errors)
+    if len(df.columns) == 0:
+        errors.append("Dataset contains no columns")
 
     if errors:
         raise ValidationError(errors)
