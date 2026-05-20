@@ -56,7 +56,7 @@ export function BeneficiaryDistribution({
       <CardHeader>
         <CardTitle className="text-lg">Beneficiary Distribution</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-6">
         <ResponsiveContainer width="100%" height={280}>
           <PieChart>
             <Pie

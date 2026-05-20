@@ -60,7 +60,7 @@ export function KpiCards({ kpis }: KpiCardsProps) {
             <CardContent className="p-8">
               <div className="flex items-center justify-between">
                 <div className="space-y-2">
-                  <p className="text-sm font-medium text-muted-foreground">
+                  <p className="text-xs font-medium text-gray-500">
                     {card.label}
                   </p>
                   <p className="text-4xl font-bold tracking-tight">

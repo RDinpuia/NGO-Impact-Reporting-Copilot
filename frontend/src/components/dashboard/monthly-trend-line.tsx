@@ -52,7 +52,7 @@ export function MonthlyTrendLine({ data }: MonthlyTrendLineProps) {
       <CardHeader>
         <CardTitle className="text-lg">Monthly Trends</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-6">
         <ResponsiveContainer width="100%" height={280}>
           <LineChart
             data={formatted}

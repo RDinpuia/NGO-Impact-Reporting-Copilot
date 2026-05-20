@@ -46,7 +46,7 @@ export function RegionBarChart({ data }: RegionBarChartProps) {
       <CardHeader>
         <CardTitle className="text-lg">By Region</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-6">
         <ResponsiveContainer width="100%" height={280}>
           <BarChart
             data={data}

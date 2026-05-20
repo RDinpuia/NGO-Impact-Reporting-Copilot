@@ -59,14 +59,12 @@ export function Topbar() {
         {/* Mobile menu */}
         <div className="flex items-center gap-2 md:hidden">
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
-                {mobileOpen ? (
-                  <X className="h-5 w-5" />
-                ) : (
-                  <Menu className="h-5 w-5" />
-                )}
-              </Button>
+            <SheetTrigger className="inline-flex items-center justify-center rounded-lg hover:bg-muted h-8 w-8">
+              {mobileOpen ? (
+                <X className="h-5 w-5" />
+              ) : (
+                <Menu className="h-5 w-5" />
+              )}
             </SheetTrigger>
             <SheetContent side="left" className="w-64 p-0">
               <SheetTitle className="sr-only">Navigation Menu</SheetTitle>

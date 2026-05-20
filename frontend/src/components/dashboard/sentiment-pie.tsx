@@ -61,7 +61,7 @@ export function SentimentPie({ sentiment }: SentimentPieProps) {
       <CardHeader>
         <CardTitle className="text-lg">Sentiment Analysis</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-6">
         <ResponsiveContainer width="100%" height={280}>
           <PieChart>
             <Pie
