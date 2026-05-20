@@ -10,12 +10,12 @@ export default function HomePage() {
   const router = useRouter();
 
   useEffect(() => {
-    if (status === "authenticated") {
-      router.replace("/dashboard");
-    } else if (status === "unauthenticated") {
-      router.replace("/login");
-    }
-  }, [status, router]);
+  if (status === "authenticated") {
+    router.replace("/reports");
+  } else if (status === "unauthenticated") {
+    router.replace("/login");
+  }
+}, [status, router]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
