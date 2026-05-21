@@ -57,4 +57,8 @@ app.include_router(reports_router, prefix="/api/reports", tags=["Reports"])
 @app.get("/api/health")
 async def health_check():
     """Health check endpoint."""
-    return {"status": "healthy", "version": "1.0.0", "service": "ImpactLens API"}
+    return {
+        "status": "healthy",
+        "version": "1.0.0",
+        "service": "ImpactLens API"
+    }
